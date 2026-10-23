@@ -2,7 +2,7 @@
 
 Bộ gõ tiếng Việt cho Linux (chạy trên [fcitx5](https://github.com/fcitx/fcitx5)): mỗi phím gõ đi thẳng vào ứng
 dụng, không bị giữ lại ở bộ gõ. Bản này sửa thêm cho terminal (cửa sổ dòng lệnh) của VS Code: Tab hoàn thành
-lệnh đúng thứ tự, terminal mới không nhận nhầm phím của terminal cũ, và không mất chữ có dấu trên GNOME Wayland.
+lệnh đúng thứ tự, và terminal mới không nhận nhầm phím của terminal cũ.
 
 > **Đây là bản không chính thức (unofficial) dựa trên [Ngó Sen](https://github.com/ngosen/ngosen).**
 > Nhóm Ngó Sen không phát hành, không bảo trợ bản này. Lỗi của bản này xin báo ở
@@ -37,6 +37,10 @@ phần nằm trong [packaging/debian/copyright](packaging/debian/copyright).
 ## Khác gì so với Ngó Sen
 
 Các bản sửa chỉ có tác dụng ở chế độ **Gõ Sen**, chế độ mặc định của Ngó Sen. Ngày sửa: 23/10/2026.
+
+Hai bản sửa cho VS Code chỉ chạy khi VS Code nhận chữ qua frontend riêng của Fcitx (đường nối giữa ứng dụng
+và bộ gõ), thường là khi VS Code chạy trên X11 hoặc XWayland. VS Code chạy Wayland gốc trên GNOME nhận chữ qua
+IBus; trên đường đó bản này giữ nguyên cách làm của Ngó Sen gốc.
 
 | Thay đổi | Lý do |
 |---|---|
@@ -172,7 +176,9 @@ Thử nhanh trong terminal VS Code, ở thư mục có thư mục con `source`:
 
 ### Giới hạn đã biết
 
-- Cách gửi từng ký tự chỉ áp dụng cho ứng dụng có tên chương trình `code` (VS Code) và `codex-web-gpt-linux`.
+- Cách gửi từng ký tự chỉ áp dụng cho ứng dụng có tên chương trình `code` (VS Code) và `codex-web-gpt-linux`;
+  việc xoá từ khi đặt lại ngữ cảnh chỉ áp dụng cho `code`. Qua IBus trên GNOME Wayland, tên chương trình có thể
+  để trống, nên terminal mới vẫn có thể nhận phím của terminal cũ nếu chuyển terminal rất nhanh.
   VSCodium, Code - OSS, Cursor và các ứng dụng Electron khác **chưa được nhận diện và chưa kiểm thử**.
 - Máy tự gõ cực nhanh (nhịp 30 ms/phím trở xuống) vẫn có thể sai thứ tự trong Electron. Các lần đo trước
   trên Debian 12 đạt ở nhịp 80 và 120 ms/phím.

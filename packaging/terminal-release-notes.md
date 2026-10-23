@@ -1,5 +1,5 @@
 Ngó Sen Terminal là bản **không chính thức** dựa trên [Ngó Sen](https://github.com/ngosen/ngosen), sửa lỗi gõ
-tiếng Việt trong terminal của VS Code, kể cả khi chạy trên GNOME Wayland. Thay đổi của bản này nằm ở
+tiếng Việt trong terminal của VS Code. Thay đổi của bản này nằm ở
 [packaging/debian/changelog](https://github.com/nguyenduchoan/ngosen-terminal/blob/main/packaging/debian/changelog).
 
 Cài hoặc cập nhật trên Debian, Ubuntu (amd64, arm64):
