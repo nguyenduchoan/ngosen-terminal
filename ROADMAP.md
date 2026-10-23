@@ -11,7 +11,7 @@ mới có số version, và từ 1.6.0 trở đi thứ tự có thể đổi. Mu
 
 - Cứu chữ: quên bật tiếng Việt mà đã gõ `tieengs vieetj`, bấm phím chuyển sang Ngó Sen là chữ thành
   `tiếng việt` (#71, #80, #82, #83). Đã xong, có thể thử ngay bằng
-  [test build](README.md#test-tính-năng-chưa-có-trong-release).
+  [test build](README.ngosen.md#test-tính-năng-chưa-có-trong-release).
 - Cứu dấu: sửa dấu chữ đã gõ xong. Bôi đen chữ, gõ dấu rồi bấm Tab (`nhanh` + `s` → `nhánh`). Ở app hỗ trợ
   surrounding text, chỉ cần click vào chữ rồi gõ dấu (#118).
 - Có gì mới: sau khi cập nhật lên version có tính năng mới, một thông báo nhỏ ở góc màn hình hiện một lần,
