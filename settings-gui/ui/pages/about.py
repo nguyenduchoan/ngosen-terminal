@@ -87,7 +87,7 @@ class AboutPage(QWidget):
 
         # GitHub Project Link
         github_link = QLabel(
-            '<a href="https://github.com/ngosen/ngosen" style="text-decoration: none;">https://github.com/ngosen/ngosen</a>'
+            '<a href="https://github.com/nguyenduchoan/ngosen-terminal" style="text-decoration: none;">https://github.com/nguyenduchoan/ngosen-terminal</a>'
         )
         github_link.setOpenExternalLinks(True)
         layout.addWidget(github_link, alignment=Qt.AlignCenter)
@@ -102,7 +102,7 @@ class AboutPage(QWidget):
         btn_bug.setFixedWidth(200)
         btn_bug.clicked.connect(
             lambda: QDesktopServices.openUrl(
-                QUrl("https://github.com/ngosen/ngosen/issues/new?template=bug_report.yml")
+                QUrl("https://github.com/nguyenduchoan/ngosen-terminal/issues/new?template=bug_report.yml")
             )
         )
 
@@ -111,7 +111,7 @@ class AboutPage(QWidget):
         btn_feature.setFixedWidth(200)
         btn_feature.clicked.connect(
             lambda: QDesktopServices.openUrl(
-                QUrl("https://github.com/ngosen/ngosen/issues/new?template=feature_request.yml")
+                QUrl("https://github.com/nguyenduchoan/ngosen-terminal/issues/new?template=feature_request.yml")
             )
         )
 

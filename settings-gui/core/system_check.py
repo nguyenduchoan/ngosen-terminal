@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 
 from i18n import _
 
-ISSUE_URL = "https://github.com/ngosen/ngosen/issues/new"
+ISSUE_URL = "https://github.com/nguyenduchoan/ngosen-terminal/issues/new"
 IM_VARIABLES = ("GTK_IM_MODULE", "QT_IM_MODULE", "XMODIFIERS", "SDL_IM_MODULE")
 
 OK, WARN, FAIL = "ok", "warn", "fail"

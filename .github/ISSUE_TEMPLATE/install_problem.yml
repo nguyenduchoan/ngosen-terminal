@@ -39,7 +39,7 @@ body:
     attributes:
       label: Toàn bộ output trong terminal
       description: Dán lệnh đã chạy và toàn bộ output, từ đầu đến cuối.
-      placeholder: curl -fsSL https://raw.githubusercontent.com/ngosen/ngosen/main/install.sh | bash
+      placeholder: curl -fsSL https://raw.githubusercontent.com/nguyenduchoan/ngosen-terminal/main/install.sh | bash
       render: shell
     validations:
       required: true

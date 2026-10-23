@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Tìm trong [các yêu cầu đã có](https://github.com/ngosen/ngosen/issues?q=label%3A%22t%C3%ADnh+n%C4%83ng%22) trước; yêu cầu gói cài cho distro hoặc CPU chưa được hỗ trợ cũng gửi ở đây.
+        Tìm trong [các yêu cầu đã có](https://github.com/nguyenduchoan/ngosen-terminal/issues?q=label%3A%22t%C3%ADnh+n%C4%83ng%22) trước; yêu cầu gói cài cho distro hoặc CPU chưa được hỗ trợ cũng gửi ở đây.
 
   - type: textarea
     id: problem
