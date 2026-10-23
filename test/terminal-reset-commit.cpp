@@ -5,9 +5,9 @@
 
 int main() {
     configureTestPaths("fcitx5-ngosen-terminal-reset-commit");
-    TestInstance test;
+    TestInstance        test;
     fcitx::NgoSenEngine engine(&test.instance);
-    fcitx::RawConfig config;
+    fcitx::RawConfig    config;
     config.setValueByPath("Mode", "Sen");
     config.setValueByPath("InputMethod", "Telex");
     engine.setConfig(config);
@@ -31,7 +31,7 @@ int main() {
             return 1;
         }
     }
-    fcitx::InputMethodEntry entry("ngosen", "Ngó Sen", "vi", "ngosen");
+    fcitx::InputMethodEntry  entry("ngosen", "Ngó Sen", "vi", "ngosen");
     fcitx::InputContextEvent focus(&context, fcitx::EventType::InputContextFocusIn);
     engine.activate(entry, focus);
     fcitx::KeyEvent first(&context, fcitx::Key(FcitxKey_d), false);

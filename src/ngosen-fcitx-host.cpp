@@ -114,8 +114,8 @@ namespace ngosen {
     void FcitxHost::commitText(const std::string& text) {
         const auto currentField = field();
         // GNOME relays IBus commits through Wayland, which keeps only the last per done.
-        const bool electronTerminal = (currentField.frontend == "dbus" || currentField.frontend == "fcitx4") &&
-                                      (currentField.program == "code" || currentField.program == "codex-web-gpt-linux");
+        const bool electronTerminal =
+            (currentField.frontend == "dbus" || currentField.frontend == "fcitx4") && (currentField.program == "code" || currentField.program == "codex-web-gpt-linux");
         if (electronTerminal && !ic_->surroundingText().isValid() && ic_->inputPanel().clientPreedit().empty()) {
             // Chromium queues multi-character insertion behind later terminal key events.
             for (auto it = text.begin(); it != text.end();) {
