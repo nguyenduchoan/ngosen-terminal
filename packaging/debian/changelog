@@ -1,3 +1,15 @@
+fcitx5-ngosen (1:1.5.5-1+terminal1) unstable; urgency=medium
+
+  * Ngó Sen Terminal, an unofficial build of Ngó Sen 1.5.5-1 (upstream commit 7cb39e4).
+  * Sen mode: VS Code terminals receive replacement text one character at a time over the Fcitx
+    D-Bus and Fcitx4 frontends, so Tab completion after sour gives source/, not source/sour.
+  * Sen mode: commits over IBus stay whole as before, now guarded by a test: GNOME Wayland keeps
+    only the last commit, and splitting them there dropped tone-marked letters (maats gave mt).
+  * A VS Code context reset without surrounding text clears the word, so a new terminal does not
+    inherit the previous terminal's keys.
+
+ -- nguyenduchoan <nguyenduchoan.wru@gmail.com>  Fri, 23 Oct 2026 16:00:00 +0700
+
 fcitx5-ngosen (1:1.5.5-1) unstable; urgency=medium
 
   * Recognise Flatpak apps by their usual program name, so Firefox from Flatpak no longer mixes

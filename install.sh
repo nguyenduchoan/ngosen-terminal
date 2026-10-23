@@ -1,14 +1,15 @@
 #!/bin/bash
-# Installs the Ngó Sen package built for this distribution from the latest GitHub release.
+# Installs the Ngó Sen Terminal package built for this distribution from the latest GitHub release.
+# Ngó Sen Terminal publishes Debian and Ubuntu packages only; other distributions use upstream Ngó Sen.
 #
-#   curl -fsSL https://raw.githubusercontent.com/ngosen/ngosen/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/nguyenduchoan/ngosen-terminal/main/install.sh | bash
 #
 # Everything lives in functions and main runs on the last line, so a download that is cut short
 # cannot run half a script.
 set -euo pipefail
 
-RELEASE_URL=${NGOSEN_RELEASE_URL:-https://github.com/ngosen/ngosen/releases/latest/download}
-SOURCE_GUIDE="https://github.com/ngosen/ngosen/blob/main/TU-DUNG.md"
+RELEASE_URL=${NGOSEN_RELEASE_URL:-https://github.com/nguyenduchoan/ngosen-terminal/releases/latest/download}
+SOURCE_GUIDE="https://github.com/nguyenduchoan/ngosen-terminal/blob/main/TU-DUNG.md"
 
 assume_yes=0
 setup_session=1

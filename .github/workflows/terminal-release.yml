@@ -1,0 +1,146 @@
+name: Build & Release
+
+# Ngó Sen Terminal publishes Debian and Ubuntu packages only. A tag such as v1.5.5-terminal1 builds
+# every target below and publishes them with SHA256SUMS, which is what install.sh reads. Running the
+# workflow by hand builds the packages as artifacts without publishing a release.
+on:
+  push:
+    tags:
+      - 'v*-terminal*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  check-version:
+    name: Tag matches the package version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # A tag on a commit that was never merged would publish packages built from unreviewed code.
+      - name: Refuse a tag that is not on main
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::$GITHUB_REF_NAME points at a commit that is not on main"
+            exit 1
+          fi
+
+      # 1:1.5.5-1+terminal1 in the changelog is released as v1.5.5-terminal1.
+      - name: Compare the tag with packaging/debian/changelog
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(sed -n '1s/^[^(]*(\([^)]*\)).*/\1/p' packaging/debian/changelog)
+          upstream=${version#*:}
+          upstream=${upstream%%-*}
+          expected="v${upstream}-${version##*+}"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match changelog version $version (expected $expected)"
+            exit 1
+          fi
+
+  build-deb:
+    name: DEB [${{ matrix.codename }}, ${{ matrix.arch }}]
+    needs: check-version
+    strategy:
+      fail-fast: false
+      matrix:
+        # The release targets of .github/package-matrix.json; Debian 12 keeps the Go core.
+        include:
+          - { distro: 'debian:12', codename: bookworm, arch: amd64 }
+          - { distro: 'debian:13', codename: trixie, arch: amd64, rust: true }
+          - { distro: 'debian:testing', codename: forky, arch: amd64, rust: true }
+          - { distro: 'ubuntu:22.04', codename: jammy, arch: amd64, rust: true }
+          - { distro: 'ubuntu:24.04', codename: noble, arch: amd64, rust: true }
+          - { distro: 'ubuntu:26.04', codename: resolute, arch: amd64, rust: true }
+          - { distro: 'ubuntu:26.10', codename: stonking, arch: amd64, rust: true }
+          - { distro: 'debian:12', codename: bookworm, arch: arm64 }
+          - { distro: 'debian:13', codename: trixie, arch: arm64, rust: true }
+          - { distro: 'debian:testing', codename: forky, arch: arm64, rust: true }
+          - { distro: 'ubuntu:22.04', codename: jammy, arch: arm64, rust: true }
+          - { distro: 'ubuntu:24.04', codename: noble, arch: arm64, rust: true }
+          - { distro: 'ubuntu:26.04', codename: resolute, arch: arm64, rust: true }
+          - { distro: 'ubuntu:26.10', codename: stonking, arch: arm64, rust: true }
+
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - name: Prepare debian directory
+        run: cp -r packaging/debian debian
+
+      # dpkg-buildpackage runs every CTest test, so a failing test stops the release.
+      - name: Build DEB
+        uses: jtdor/build-deb-action@473136f14a42a231124c1f7cefaedfe941203c38 # v1.9.1
+        with:
+          docker-image: ${{ matrix.distro }}
+          apt-opts: ${{ matrix.rust && '-o APT::Build-Profiles=pkg.ngosen.rust' || '' }}
+          buildpackage-opts: >-
+            --build=binary --no-sign ${{ matrix.rust && '--build-profiles=pkg.ngosen.rust' || '' }}
+
+      # install.sh picks the package by the codename in its file name.
+      - name: Name the package after its distribution
+        env:
+          ARCH: ${{ matrix.arch }}
+          CODENAME: ${{ matrix.codename }}
+        run: |
+          debs=(debian/artifacts/fcitx5-ngosen_*_"$ARCH".deb)
+          if [ "${#debs[@]}" != 1 ] || [ ! -f "${debs[0]}" ]; then
+            echo "::error::expected exactly one fcitx5-ngosen package, found: ${debs[*]}"
+            exit 1
+          fi
+          mkdir -p out
+          cp "${debs[0]}" "out/$(basename "${debs[0]}" "_$ARCH.deb")_${CODENAME}_$ARCH.deb"
+          ls -l out
+
+      - name: Upload DEB artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: deb-${{ matrix.codename }}-${{ matrix.arch }}
+          path: out/*.deb
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build-deb
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download all packages
+        uses: actions/download-artifact@v8
+        with:
+          pattern: deb-*
+          path: dist/
+          merge-multiple: true
+
+      - name: Write SHA256SUMS
+        run: |
+          cd dist
+          sha256sum -- *.deb > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Ngó Sen Terminal ${GITHUB_REF_NAME#v}" \
+            --notes-file packaging/terminal-release-notes.md \
+            --latest

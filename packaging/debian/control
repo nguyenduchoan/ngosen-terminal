@@ -1,7 +1,8 @@
 Source: fcitx5-ngosen
 Section: utils
 Priority: optional
-Maintainer: Nguyen Phi <nguyenphidt@gmail.com>
+Maintainer: nguyenduchoan <nguyenduchoan.wru@gmail.com>
+XSBC-Original-Maintainer: Nguyen Phi <nguyenphidt@gmail.com>
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                dh-sequence-python3,
@@ -19,7 +20,7 @@ Build-Depends: debhelper-compat (= 13),
                python3,
                librsvg2-bin
 Standards-Version: 4.6.0
-Homepage: https://github.com/ngosen/ngosen
+Homepage: https://github.com/nguyenduchoan/ngosen-terminal
 
 Package: fcitx5-ngosen
 Architecture: any
@@ -27,3 +28,8 @@ Architecture: any
 Depends: passwd, fcitx5, fcitx5-data, libxcb1, libxcb-xtest0, libxcb-xinput0, python3-qtpy, python3-dbus, python3-qtpy-pyqt6 | python3-qtpy-pyside6 | python3-qtpy-pyqt5 | python3-pyqt5, ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Description: Ngó Sen, a Vietnamese input method for fcitx5
  Ngó Sen is a Vietnamese input method for fcitx5.
+ .
+ This is Ngó Sen Terminal, an unofficial build of Ngó Sen
+ (https://github.com/ngosen/ngosen) that keeps text typed into
+ VS Code terminals in order and keeps a new terminal from
+ inheriting the previous terminal's keys.
