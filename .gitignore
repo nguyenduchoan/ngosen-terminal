@@ -46,3 +46,6 @@ __pycache__/
 !/bamboo-rs/.cargo/
 !/bamboo-rs/vendor/**
 /bamboo-rs/target/
+
+# Ngó Sen Terminal release packages from packaging/build-release.sh
+/dist/

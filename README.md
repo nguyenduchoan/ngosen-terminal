@@ -54,11 +54,13 @@ Mã thay đổi:
 - `src/ngosen-engine.cpp`: xoá từ đang gõ khi VS Code đặt lại ngữ cảnh nhập.
 - `test/terminal-reset-commit.cpp`: bài kiểm thử hồi quy (kiểm thử chặn lỗi cũ quay lại) cho cả ba điểm trên.
 - Đóng gói: số phiên bản `1:1.5.5-1+terminal1`, `install.sh` tải gói từ repo này, nút báo lỗi trong cửa sổ
-  cài đặt trỏ về repo này, bỏ các workflow phát hành cần khoá ký của Ngó Sen.
+  cài đặt trỏ về repo này. Bỏ toàn bộ GitHub Actions của Ngó Sen; gói phát hành được dựng bằng
+  `packaging/build-release.sh` trong Docker.
 
 ## Cài
 
-Hỗ trợ Debian và Ubuntu, máy amd64 (x86_64) và arm64:
+Hỗ trợ Debian và Ubuntu trên máy amd64 (x86_64). Máy arm64 chưa có gói dựng sẵn; tự dựng từ mã theo hướng dẫn
+bên dưới.
 
 | Bản phân phối | Tên mã |
 |---|---|
@@ -158,9 +160,8 @@ Thử nhanh trong terminal VS Code, ở thư mục có thư mục con `source`:
 
 ## Đã kiểm thử những gì
 
-- **Kiểm thử tự động:** mọi gói phát hành đều được dựng và chạy toàn bộ CTest trên từng bản phân phối, gồm bài
-  `terminal_reset_commit` mới. Bài này thất bại trên mã Ngó Sen gốc và đạt trên mã đã sửa. Dựng thử trong
-  Docker cho Debian 12 (lõi Go) và Ubuntu 24.04 (lõi Rust): tất cả kiểm thử đạt.
+- **Kiểm thử tự động:** gói của từng bản phân phối chỉ được tạo khi toàn bộ CTest đạt, gồm bài
+  `terminal_reset_commit` mới. Bài này thất bại trên mã Ngó Sen gốc và đạt trên mã đã sửa.
 - **Gõ thật trên Debian 12, GNOME 43 Wayland, VS Code chạy Wayland gốc**, máy tự gõ với nhịp 120 ms/phím.
   Kết quả đọc trực tiếp từ chữ terminal nhận được (qua PTY, kênh ký tự của terminal), không chỉ nhìn màn hình:
 
@@ -183,7 +184,7 @@ Thử nhanh trong terminal VS Code, ở thư mục có thư mục con `source`:
 - Máy tự gõ cực nhanh (nhịp 30 ms/phím trở xuống) vẫn có thể sai thứ tự trong Electron. Các lần đo trước
   trên Debian 12 đạt ở nhịp 80 và 120 ms/phím.
 - Chưa đo đầy đủ GTK4, Qt6, LibreOffice, Vim toàn màn hình. Ngó Sen gốc vẫn xử lý các ứng dụng này như cũ.
-- Chỉ phát hành gói Debian/Ubuntu.
+- Chỉ phát hành gói Debian/Ubuntu cho amd64.
 
 ## Gỡ
 
@@ -199,17 +200,28 @@ Muốn quay về Ngó Sen gốc thì cài lại theo [README.ngosen.md](README.n
 
 ### Phát hành bản mới
 
-1. Thêm mục mới ở đầu `packaging/debian/changelog`, số phiên bản dạng `1:<bản Ngó Sen>+terminal<N>`.
-2. Commit lên `main`, gắn tag theo dạng `v<bản Ngó Sen không có -1>-terminal<N>` rồi đẩy tag:
+Repo không dùng GitHub Actions. Gói được dựng trên máy có Docker:
+
+1. Thêm mục mới ở đầu `packaging/debian/changelog`, số phiên bản dạng `1:<bản Ngó Sen>+terminal<N>`, rồi commit.
+2. Dựng gói cho cả 7 bản phân phối. Mỗi bản chạy toàn bộ kiểm thử; một bản lỗi thì script dừng:
 
    ```
-   git tag v1.5.5-terminal1
-   git push origin v1.5.5-terminal1
+   git submodule update --init --recursive
+   packaging/build-release.sh
    ```
 
-3. Workflow [Build & Release](.github/workflows/terminal-release.yml) kiểm tra tag khớp changelog, dựng 14 gói
-   (7 bản phân phối × amd64/arm64), chạy kiểm thử, rồi tạo bản phát hành kèm `SHA256SUMS`. `install.sh` luôn
-   lấy bản phát hành mới nhất.
+   Gói nằm trong `dist/`, kèm `SHA256SUMS`; nhật ký dựng nằm trong `build-logs/`. Script dựng cho kiến trúc của
+   máy đang chạy, nên máy amd64 cho gói amd64.
+3. Gắn tag dạng `v<bản Ngó Sen không có -1>-terminal<N>` và đẩy lên:
+
+   ```
+   git tag -a v1.5.5-terminal1 -m "Ngó Sen Terminal 1.5.5-terminal1"
+   git push origin main v1.5.5-terminal1
+   ```
+
+4. Trên GitHub, tạo bản phát hành (Releases → Draft a new release) từ tag đó, dán nội dung
+   `packaging/terminal-release-notes.md`, tải lên **mọi tệp trong `dist/`** gồm cả `SHA256SUMS`, rồi bấm Publish.
+   `install.sh` luôn lấy bản phát hành mới nhất, nên mỗi bản phát hành phải có đủ gói và `SHA256SUMS`.
 
 Không đẩy các tag `ngosen-*` của Ngó Sen lên repo này (đừng dùng `git push --tags`).
 

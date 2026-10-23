@@ -2,7 +2,7 @@ Ngó Sen Terminal là bản **không chính thức** dựa trên [Ngó Sen](http
 tiếng Việt trong terminal của VS Code. Thay đổi của bản này nằm ở
 [packaging/debian/changelog](https://github.com/nguyenduchoan/ngosen-terminal/blob/main/packaging/debian/changelog).
 
-Cài hoặc cập nhật trên Debian, Ubuntu (amd64, arm64):
+Cài hoặc cập nhật trên Debian, Ubuntu (máy amd64):
 
 ```
 curl -fsSL https://raw.githubusercontent.com/nguyenduchoan/ngosen-terminal/main/install.sh | bash
