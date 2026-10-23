@@ -774,6 +774,12 @@ namespace fcitx {
     void NgoSenEngine::reset(const InputMethodEntry& /*entry*/, InputContextEvent& event) {
         NGOSEN_INFO("Reset engine");
         auto* state = stateFor(event.inputContext());
+        if (event.type() == EventType::InputContextReset && event.inputContext()->program() == "code" &&
+            !event.inputContext()->surroundingText().isValid()) {
+            // VS Code reuses this context across terminals with no surrounding-text report.
+            state->reset();
+            return;
+        }
         if (!state->isEmptyHistory() && event.type() != EventType::InputContextFocusOut) {
             return;
         }

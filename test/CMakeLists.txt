@@ -253,3 +253,5 @@ endif()
 
 # Tests of the typing logic alone; NGOSEN_CORE_ONLY builds just these.
 add_subdirectory(core)
+
+add_ngosen_headless_test(terminal_reset_commit terminal-reset-commit.cpp "integration;terminal")

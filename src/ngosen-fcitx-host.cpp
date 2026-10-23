@@ -11,6 +11,7 @@
 #include "ngosen-xtest.h"
 
 #include <fcitx-utils/i18n.h>
+#include <fcitx-utils/utf8.h>
 #include <fcitx-utils/key.h>
 #include <fcitx/candidatelist.h>
 #include <fcitx/event.h>
@@ -111,6 +112,19 @@ namespace ngosen {
     } // namespace
 
     void FcitxHost::commitText(const std::string& text) {
+        const auto currentField = field();
+        // GNOME relays IBus commits through Wayland, which keeps only the last per done.
+        const bool electronTerminal = (currentField.frontend == "dbus" || currentField.frontend == "fcitx4") &&
+                                      (currentField.program == "code" || currentField.program == "codex-web-gpt-linux");
+        if (electronTerminal && !ic_->surroundingText().isValid() && ic_->inputPanel().clientPreedit().empty()) {
+            // Chromium queues multi-character insertion behind later terminal key events.
+            for (auto it = text.begin(); it != text.end();) {
+                auto next = fcitx::utf8::nextNChar(it, 1);
+                ic_->commitString(std::string(it, next));
+                it = next;
+            }
+            return;
+        }
         ic_->commitString(text);
     }
 
